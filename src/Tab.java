@@ -15,14 +15,13 @@ public class Tab extends JButton implements ActionListener {
     }
     public Tab(String Title, String Link, TabDisplay Display, TabList List) {
         super(Title);
-        setBackground(new Color(57, 72, 103));
-        setForeground(new Color(155, 164, 181));
+        setBackground(Maxium.THEME.Selected);
+        setForeground(Maxium.THEME.Icon);
         addActionListener(this);
 
         list = List;
         title = Title;
         link = Link;
         display = Display;
-        System.out.println("made tab");
     }
 }

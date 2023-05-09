@@ -10,14 +10,17 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
     private Maxium main;
     public TabDisplay(String link, Maxium mainObject) {
         super();
-        setBackground(new Color(155, 164, 181));
+        setBackground(Maxium.THEME.Accent);
         this.main = mainObject;
         pane = new JEditorPane();
         pane.setEditable(false);
         pane.addHyperlinkListener(this);
 
+        Dimension size = new Dimension(Maxium.DISPLAY_WIDTH, Maxium.DISPLAY_HEIGHT);
+
+        pane.setPreferredSize(size);
         add(new JScrollPane(pane));
-        setPreferredSize(new Dimension(Maxium.DISPLAY_WIDTH, Maxium.DISPLAY_HEIGHT));
+        setPreferredSize(size);
         main.addToDisplay(this);
     }
     public void hyperlinkUpdate(HyperlinkEvent evt) {

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class TabList extends JPanel {
     private ArrayList<Tab> list;
-    private Main main;
+    private Maxium main;
 
     public int getIndex(Tab tab) {
         for (int i = 0; i < list.size(); i++) {
@@ -44,12 +44,18 @@ public class TabList extends JPanel {
 
     public void openPreviousTabs() {
         //read a text file or something
+        System.out.println("openPreviousTabs");
     }
 
-    public TabList(Main mainObject, boolean loadTabs) {
-        super(new CardLayout());
-        setPreferredSize(new Dimension(Main.DISPLAY_WIDTH, Main.BROWSER_HEIGHT / 2));
+    public TabList(Maxium mainObject, boolean loadTabs) {
+        super();
+        setLayout(new CardLayout(10, 0));
+        setPreferredSize(new Dimension(Maxium.DISPLAY_WIDTH, Maxium.BROWSER_HEIGHT / 2));
         main = mainObject;
         list = new ArrayList<>();
+
+        if (loadTabs) {
+            openPreviousTabs();
+        }
     }
 }

@@ -6,7 +6,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
 
 public class TabDisplay extends JPanel implements HyperlinkListener {
-    public JEditorPane pane;
+    private JEditorPane pane;
     private Maxium main;
     public TabDisplay(String link, Maxium mainObject) {
         super();
@@ -23,6 +23,9 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
         setPreferredSize(size);
         main.addToDisplay(this);
     }
+
+    public JEditorPane getPane() { return pane; }
+
     public void hyperlinkUpdate(HyperlinkEvent evt) {
         if (evt.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
             return;

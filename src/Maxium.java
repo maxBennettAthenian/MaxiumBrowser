@@ -4,6 +4,7 @@
 // Color Palette - https://colorhunt.co/palette/f1f6f9394867212a3e9ba4b5
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,9 +19,9 @@ interface ColorTheme {
 }
 
 public class Maxium extends JFrame implements ActionListener {
-    static final int BROWSER_HEIGHT = 100;
-    static final int DISPLAY_WIDTH = 500;
-    static final int DISPLAY_HEIGHT = 400;
+    static final int BROWSER_HEIGHT = 60;
+    static final int DISPLAY_WIDTH = 800;
+    static final int DISPLAY_HEIGHT = 450;
 
     static final ColorTheme THEME = new ColorTheme() {};
 
@@ -37,7 +38,8 @@ public class Maxium extends JFrame implements ActionListener {
     public void addressChanged(String url) {
         try {
             setAddress(url);
-            currentTab.display.pane.setPage(url);
+            currentTab.display.getPane().setPage(url);
+            currentTab.display.updateUI();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,14 +47,13 @@ public class Maxium extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("ADDRESS BAR ACTION: " + e.getActionCommand());
         if (!currentTab.link.equals(e.getActionCommand())) {
-            System.out.println("address changed?");
-//            addressChanged(addressBar.getText());
+
+            addressChanged(addressBar.getText());
         }
     }
 
-    public void addToDisplay(JPanel object) {
+    public void addToDisplay(TabDisplay object) {
 //        displayPanel.add(object, BorderLayout.CENTER);
         object.setVisible(true);
     }
@@ -72,6 +73,7 @@ public class Maxium extends JFrame implements ActionListener {
 
     public Maxium(boolean loadTabs) {
         super("Maxium");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DISPLAY_WIDTH, BROWSER_HEIGHT + DISPLAY_HEIGHT));
 
@@ -91,12 +93,15 @@ public class Maxium extends JFrame implements ActionListener {
         //address bar + buttons
         functionPanel = new JPanel();
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.X_AXIS));
-        functionPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH, BROWSER_HEIGHT / 2));
+        functionPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 10, BROWSER_HEIGHT / 2));
 
         addressBar = new JTextField();
         addressBar.setBackground(THEME.Selected);
         addressBar.setForeground(THEME.Icon);
         addressBar.addActionListener(this);
+        addressBar.setBorder(null);
+        addressBar.setPreferredSize(new Dimension(
+                DISPLAY_WIDTH - 100,BROWSER_HEIGHT / 2 - 10));
 //        SwingHTMLBrowser browser = new SwingHTMLBrowser();
 //        browser.setVisible(true);
 

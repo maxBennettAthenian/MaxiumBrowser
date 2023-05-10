@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class TabList extends JPanel {
     private ArrayList<Tab> list;
     private Maxium main;
+    private static int nextTabId = 1;
 
     public int getIndex(Tab tab) {
         for (int i = 0; i < list.size(); i++) {
@@ -24,7 +25,8 @@ public class TabList extends JPanel {
     public Tab openTab() { return openTab("http://google.com"); }
 
     public Tab openTab(String link) {
-        Tab newTab = new Tab("New Tab", link, new TabDisplay(link, main), this);
+        Tab newTab = new Tab("New Tab", link, new TabDisplay(link, main, nextTabId), this);
+        nextTabId++;
         list.add(newTab);
         add(newTab);
         updateUI();
@@ -49,7 +51,8 @@ public class TabList extends JPanel {
 
     public TabList(Maxium mainObject, boolean loadTabs) {
         super();
-        setLayout(new CardLayout(10, 0));
+        LayoutManager layout = new FlowLayout();//10, 0);
+        setLayout(layout);
         setPreferredSize(new Dimension(Maxium.DISPLAY_WIDTH, Maxium.BROWSER_HEIGHT / 2));
         main = mainObject;
         list = new ArrayList<>();

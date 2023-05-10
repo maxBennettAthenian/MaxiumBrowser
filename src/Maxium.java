@@ -65,19 +65,21 @@ public class Maxium extends JFrame implements ActionListener {
     }
 
     public void addToDisplay(TabDisplay object) {
-//        displayPanel.add(object, BorderLayout.CENTER);
+        displayPanel.getLayout().addLayoutComponent(object.getId(), object);
+        displayPanel.add(object);
         object.setVisible(true);
     }
 
     public void setTab(Tab t) {
+        ((CardLayout) displayPanel.getLayout()).show(displayPanel, t.display.getId());
         if (currentTab != null) {
-            displayPanel.remove(currentTab.display);
+//            displayPanel.remove(currentTab.display);
 //            currentTab.display.setVisible(false);
         }
 
         currentTab = t;
         addressBar.setText(t.link);
-        displayPanel.add(t.display, BorderLayout.CENTER);
+//        displayPanel.add(t.display, BorderLayout.CENTER);
 //        t.display.setSize(displayPanel.getSize());
 //        t.display.setVisible(true);
         displayPanel.updateUI();
@@ -95,7 +97,7 @@ public class Maxium extends JFrame implements ActionListener {
         //html display
         displayPanel = new JPanel();
         displayPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH, DISPLAY_HEIGHT));
-        displayPanel.setLayout(new BorderLayout());
+        displayPanel.setLayout(new CardLayout());
 
         //tabs
         browserPanel = new JPanel();

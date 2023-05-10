@@ -21,7 +21,7 @@ public class TabList extends JPanel {
         main.setTab(tab);
     }
 
-    public Tab openTab() { return openTab("https://google.com"); }
+    public Tab openTab() { return openTab("http://google.com"); }
 
     public Tab openTab(String link) {
         Tab newTab = new Tab("New Tab", link, new TabDisplay(link, main), this);

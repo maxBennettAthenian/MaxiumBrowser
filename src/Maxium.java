@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Arrays;
 
 interface ColorTheme {
     Color Icon = Color.WHITE;
@@ -29,10 +30,11 @@ public class Maxium extends JFrame implements ActionListener {
     private JPanel browserPanel, functionPanel, displayPanel;
     private Tab currentTab;
     private JTextField addressBar;
+    private JButton previous, refresh;
 
     public void setAddress(String url) {
         addressBar.setText(url);
-        currentTab.link = url;
+        currentTab.setNewLink(url);
     }
 
     public void addressChanged(String url) {
@@ -47,9 +49,18 @@ public class Maxium extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!currentTab.link.equals(e.getActionCommand())) {
-
+        if (e.getActionCommand().equals("Address") &&
+                !currentTab.link.equals(((JTextField) e.getSource()).getText())) {
             addressChanged(addressBar.getText());
+            setTab(currentTab);
+        } else if (e.getActionCommand().equals("◀") && currentTab.hasPreviousLinks()) {
+            System.out.println("previous link clicked");
+            addressChanged(currentTab.getPreviousLink());
+            setTab(currentTab); //update if there are previous links
+        } else if (e.getActionCommand().equals("🔄️")) {
+            System.out.println("refresh");
+            addressChanged(currentTab.link);
+            setTab(currentTab);
         }
     }
 
@@ -67,8 +78,12 @@ public class Maxium extends JFrame implements ActionListener {
         currentTab = t;
         addressBar.setText(t.link);
         displayPanel.add(t.display, BorderLayout.CENTER);
+//        t.display.setSize(displayPanel.getSize());
 //        t.display.setVisible(true);
         displayPanel.updateUI();
+
+        //check if previous links
+        previous.setForeground(t.hasPreviousLinks() ? THEME.Icon : THEME.Accent);
     }
 
     public Maxium(boolean loadTabs) {
@@ -79,12 +94,12 @@ public class Maxium extends JFrame implements ActionListener {
 
         //html display
         displayPanel = new JPanel();
-        displayPanel.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        displayPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH, DISPLAY_HEIGHT));
         displayPanel.setLayout(new BorderLayout());
 
         //tabs
         browserPanel = new JPanel();
-        browserPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH, BROWSER_HEIGHT));
+        browserPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 20, BROWSER_HEIGHT));
         browserPanel.setBackground(THEME.Background);
 
         tabs = new TabList(this, loadTabs);
@@ -92,19 +107,36 @@ public class Maxium extends JFrame implements ActionListener {
 
         //address bar + buttons
         functionPanel = new JPanel();
+        functionPanel.setBackground(THEME.Selected);
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.X_AXIS));
-        functionPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 10, BROWSER_HEIGHT / 2));
+        functionPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 20, BROWSER_HEIGHT / 2));
+
+//        Dimension btnSize = new Dimension(BROWSER_HEIGHT / 2, BROWSER_HEIGHT / 2);
+        previous = new JButton("◀");
+        previous.setBackground(THEME.Selected);
+        previous.setForeground(THEME.Icon);
+        previous.addActionListener(this);
+//        previous.setPreferredSize(btnSize);
+
+        refresh = new JButton("🔄️");
+        refresh.setBackground(THEME.Selected);
+        refresh.setForeground(THEME.Icon);
+        refresh.addActionListener(this);
+//        refresh.setPreferredSize(btnSize);
 
         addressBar = new JTextField();
-        addressBar.setBackground(THEME.Selected);
+        addressBar.setActionCommand("Address");
+        addressBar.setBackground(THEME.Background);
         addressBar.setForeground(THEME.Icon);
         addressBar.addActionListener(this);
         addressBar.setBorder(null);
         addressBar.setPreferredSize(new Dimension(
-                DISPLAY_WIDTH - 100,BROWSER_HEIGHT / 2 - 10));
+                DISPLAY_WIDTH - 10,BROWSER_HEIGHT / 2 - 10));
 //        SwingHTMLBrowser browser = new SwingHTMLBrowser();
 //        browser.setVisible(true);
 
+        functionPanel.add(previous);
+        functionPanel.add(refresh);
         functionPanel.add(addressBar);
 
         browserPanel.add(tabs, BorderLayout.NORTH);
@@ -116,8 +148,8 @@ public class Maxium extends JFrame implements ActionListener {
         if (loadTabs) {
 //            tabs.openPreviousTabs();
         } else {
-//            tabs.openTab();
-//            tabs.openTab();
+            tabs.openTab();
+            tabs.openTab();
             setTab(tabs.openTab());
         }
         pack();

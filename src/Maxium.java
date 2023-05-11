@@ -39,8 +39,8 @@ public class Maxium extends JFrame implements ActionListener {
 
     public void addressChanged(String url) {
         try {
-            setAddress(url);
             currentTab.display.getPane().setPage(url);
+            setAddress(url);
             currentTab.display.updateUI();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -59,7 +59,6 @@ public class Maxium extends JFrame implements ActionListener {
             setTab(currentTab); //update if there are previous links
         } else if (e.getActionCommand().equals("🔄️")) {
             System.out.println("refresh");
-            addressChanged(currentTab.link);
             setTab(currentTab);
         }
     }
@@ -73,16 +72,13 @@ public class Maxium extends JFrame implements ActionListener {
     public void setTab(Tab t) {
         ((CardLayout) displayPanel.getLayout()).show(displayPanel, t.display.getId());
         if (currentTab != null) {
-//            displayPanel.remove(currentTab.display);
-//            currentTab.display.setVisible(false);
+            currentTab.setSelected(false);
         }
 
         currentTab = t;
-        addressBar.setText(t.link);
-//        displayPanel.add(t.display, BorderLayout.CENTER);
-//        t.display.setSize(displayPanel.getSize());
-//        t.display.setVisible(true);
-        displayPanel.updateUI();
+        t.setSelected(true);
+        t.display.updateUI();
+        addressChanged(t.link);
 
         //check if previous links
         previous.setForeground(t.hasPreviousLinks() ? THEME.Icon : THEME.Accent);
@@ -96,7 +92,7 @@ public class Maxium extends JFrame implements ActionListener {
 
         //html display
         displayPanel = new JPanel();
-        displayPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH, DISPLAY_HEIGHT));
+        displayPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 20, DISPLAY_HEIGHT - 20));
         displayPanel.setLayout(new CardLayout());
 
         //tabs

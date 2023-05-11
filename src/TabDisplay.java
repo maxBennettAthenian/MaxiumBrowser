@@ -8,12 +8,11 @@ import java.awt.*;
 public class TabDisplay extends JPanel implements HyperlinkListener {
     private JEditorPane pane;
     private Maxium main;
-
     private final String id;
+
     public TabDisplay(String link, Maxium mainObject, int id) {
         super();
 
-        System.out.println("new tab display with id: " + id);
         this.id = Integer.toString(id);
         this.main = mainObject;
 
@@ -28,7 +27,6 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
         add(new JScrollPane(pane));
         setPreferredSize(size);
         main.addToDisplay(this);
-
     }
 
     public JEditorPane getPane() { return pane; }
@@ -36,6 +34,7 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
     public String getId() { return id; }
 
     public void hyperlinkUpdate(HyperlinkEvent evt) {
+        System.out.println("hyper link update");
         if (evt.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
             return;
         }
@@ -45,9 +44,9 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
             doc.processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent)evt);
         } else {
             String url = evt.getURL().toString();
-            main.setAddress(url);
             try {
                 pane.setPage(url);
+                main.setAddress(url);
             } catch (Throwable t) {
                 t.printStackTrace();
             }

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tab extends JButton implements ActionListener {
     public String title, link;
@@ -17,8 +18,8 @@ public class Tab extends JButton implements ActionListener {
     }
 
     public String getPreviousLink() {
+        link = links.get(links.size() - 2);
         links.remove(links.size() - 1);
-        link = links.get(links.size() - 1);
         return link;
     }
 
@@ -33,17 +34,21 @@ public class Tab extends JButton implements ActionListener {
         return links.size() > 1;
     }
 
+    public void setSelected(boolean selected) {
+        setBackground(selected ? Maxium.THEME.Selected : Maxium.THEME.Background);
+    }
+
     public Tab(String Title, String Link, TabDisplay Display, TabList List) {
         super(Title);
-        setBackground(Maxium.THEME.Selected);
+        setSelected(false);
         setForeground(Maxium.THEME.Icon);
         addActionListener(this);
 
-        links = new ArrayList<>();
-        links.add(link);
         list = List;
         title = Title;
         link = Link;
         display = Display;
+        links = new ArrayList<>();
+        links.add(Link);
     }
 }

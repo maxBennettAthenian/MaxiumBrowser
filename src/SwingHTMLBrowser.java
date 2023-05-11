@@ -39,6 +39,7 @@ public class SwingHTMLBrowser extends JFrame implements ActionListener, Hyperlin
     }
 
     public void hyperlinkUpdate(HyperlinkEvent evt) {
+        System.out.println("hyper link update");
         if (evt.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
             return;
         }

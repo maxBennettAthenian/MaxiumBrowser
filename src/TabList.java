@@ -4,9 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class TabList extends JPanel {
+public class TabList extends JPanel implements ActionListener {
     private ArrayList<Tab> list;
     private Maxium main;
+    private JButton openTabBtn;
     private static int nextTabId = 1;
 
     public int getIndex(Tab tab) {
@@ -28,7 +29,9 @@ public class TabList extends JPanel {
         Tab newTab = new Tab("New Tab", link, new TabDisplay(link, main, nextTabId), this);
         nextTabId++;
         list.add(newTab);
+        remove(openTabBtn);
         add(newTab);
+        add(openTabBtn);
         updateUI();
         return newTab;
     }
@@ -49,7 +52,11 @@ public class TabList extends JPanel {
         System.out.println("openPreviousTabs");
     }
 
-    public TabList(Maxium mainObject, boolean loadTabs) {
+    public void actionPerformed(ActionEvent e) {
+        main.setTab(openTab());//new tab button clicked
+    }
+
+    public TabList(Maxium mainObject) {
         super();
         LayoutManager layout = new FlowLayout();//10, 0);
         setLayout(layout);
@@ -57,8 +64,8 @@ public class TabList extends JPanel {
         main = mainObject;
         list = new ArrayList<>();
 
-        if (loadTabs) {
-            openPreviousTabs();
-        }
+        openTabBtn = new JButton("+");
+        openTabBtn.addActionListener(this);
+        add(openTabBtn);
     }
 }

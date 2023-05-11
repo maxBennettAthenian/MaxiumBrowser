@@ -100,7 +100,7 @@ public class Maxium extends JFrame implements ActionListener {
         browserPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 20, BROWSER_HEIGHT));
         browserPanel.setBackground(THEME.Background);
 
-        tabs = new TabList(this, loadTabs);
+        tabs = new TabList(this);
         tabs.setBackground(THEME.Background);
 
         //address bar + buttons
@@ -130,8 +130,6 @@ public class Maxium extends JFrame implements ActionListener {
         addressBar.setBorder(null);
         addressBar.setPreferredSize(new Dimension(
                 DISPLAY_WIDTH - 10,BROWSER_HEIGHT / 2 - 10));
-//        SwingHTMLBrowser browser = new SwingHTMLBrowser();
-//        browser.setVisible(true);
 
         functionPanel.add(previous);
         functionPanel.add(refresh);
@@ -146,8 +144,8 @@ public class Maxium extends JFrame implements ActionListener {
         if (loadTabs) {
 //            tabs.openPreviousTabs();
         } else {
-            tabs.openTab();
-            tabs.openTab();
+//            tabs.openTab();
+//            tabs.openTab();
             setTab(tabs.openTab());
         }
         pack();

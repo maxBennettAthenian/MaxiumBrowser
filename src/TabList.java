@@ -39,20 +39,19 @@ public class TabList extends JPanel implements ActionListener {
     public Tab closeTab(Tab t) {
         int index = getIndex(t);
         if (index != -1) {
-            if (list.size() == 0) {
-                main.setTab(openTab());
-            }
+            System.out.println("found tab to close");
             main.removeDisplay(t.display);
             list.remove(index);
             t.removeAll();
             remove(t);
             updateUI();
-        }
+        } else System.out.println("COULD NOT FIND TAB TO CLOSE");
 
         if (list.size() > 0) {
             return list.get(0);
         }
-        return openTab();
+        main.closeWindow();
+        return null;
     }
 
     public void openPreviousTabs() {

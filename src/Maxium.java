@@ -8,6 +8,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -78,6 +79,10 @@ public class Maxium extends JFrame implements ActionListener {
     }
 
     public void setTab(Tab t) {
+        if (t == null) {
+            return;
+        }
+
         ((CardLayout) displayPanel.getLayout()).show(displayPanel, t.display.getId());
         if (currentTab != null) {
             currentTab.setSelected(false);
@@ -90,6 +95,10 @@ public class Maxium extends JFrame implements ActionListener {
 
         //check if previous links
         previous.setForeground(t.hasPreviousLinks() ? THEME.Icon : THEME.Accent);
+    }
+
+    public void closeWindow() {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
     public Maxium(boolean loadTabs) {

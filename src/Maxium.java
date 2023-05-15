@@ -30,7 +30,7 @@ public class Maxium extends JFrame implements ActionListener {
     private JPanel browserPanel, functionPanel, displayPanel;
     private Tab currentTab;
     private JTextField addressBar;
-    private JButton previous, refresh;
+    private JButton previous, refresh, closeButton;
 
     public void setAddress(String url) {
         addressBar.setText(url);
@@ -60,6 +60,9 @@ public class Maxium extends JFrame implements ActionListener {
         } else if (e.getActionCommand().equals("🔄️")) {
             System.out.println("refresh");
             setTab(currentTab);
+        } else if (e.getActionCommand().equals("X")) {
+            System.out.println("close tab");
+            setTab(tabs.closeTab(currentTab));
         }
     }
 
@@ -67,6 +70,11 @@ public class Maxium extends JFrame implements ActionListener {
         displayPanel.getLayout().addLayoutComponent(object.getId(), object);
         displayPanel.add(object);
         object.setVisible(true);
+    }
+
+    public void removeDisplay(TabDisplay object) {
+        displayPanel.getLayout().removeLayoutComponent(object);
+        displayPanel.remove(object);
     }
 
     public void setTab(Tab t) {
@@ -122,9 +130,14 @@ public class Maxium extends JFrame implements ActionListener {
         refresh.addActionListener(this);
 //        refresh.setPreferredSize(btnSize);
 
+        closeButton = new JButton("X");
+        closeButton.setBackground(THEME.Selected);
+        closeButton.setForeground(THEME.Icon);
+        closeButton.addActionListener(this);
+
         addressBar = new JTextField();
         addressBar.setActionCommand("Address");
-        addressBar.setBackground(THEME.Background);
+        addressBar.setBackground(THEME.Selected);
         addressBar.setForeground(THEME.Icon);
         addressBar.addActionListener(this);
         addressBar.setBorder(null);
@@ -133,6 +146,7 @@ public class Maxium extends JFrame implements ActionListener {
 
         functionPanel.add(previous);
         functionPanel.add(refresh);
+        functionPanel.add(closeButton);
         functionPanel.add(addressBar);
 
         browserPanel.add(tabs, BorderLayout.NORTH);

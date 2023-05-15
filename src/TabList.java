@@ -36,15 +36,23 @@ public class TabList extends JPanel implements ActionListener {
         return newTab;
     }
 
-    public void closeTab(Tab t) {
+    public Tab closeTab(Tab t) {
         int index = getIndex(t);
         if (index != -1) {
             if (list.size() == 0) {
                 main.setTab(openTab());
             }
+            main.removeDisplay(t.display);
             list.remove(index);
             t.removeAll();
+            remove(t);
+            updateUI();
         }
+
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return openTab();
     }
 
     public void openPreviousTabs() {

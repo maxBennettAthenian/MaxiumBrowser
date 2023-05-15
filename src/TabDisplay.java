@@ -21,7 +21,7 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
         pane.setEditable(false);
         pane.addHyperlinkListener(this);
 
-        Dimension size = new Dimension(Maxium.DISPLAY_WIDTH, Maxium.DISPLAY_HEIGHT);
+        Dimension size = new Dimension(Maxium.DISPLAY_WIDTH - 20, Maxium.DISPLAY_HEIGHT - 20);
 
         pane.setPreferredSize(size);
         add(new JScrollPane(pane));

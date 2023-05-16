@@ -5,11 +5,14 @@
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,18 +25,19 @@ interface ColorTheme {
     Color Background = new Color(33, 42, 62);
 }
 
-public class Maxium extends JFrame implements ActionListener, WindowListener {
+public class Maxium extends JFrame implements ActionListener, WindowListener, ChangeListener {
     static final int BROWSER_HEIGHT = 60;
     static final int DISPLAY_WIDTH = 800;
     static final int DISPLAY_HEIGHT = 450;
 
     static final ColorTheme THEME = new ColorTheme() {};
-
+    private boolean loadTabs;
     private TabList tabs;
     private JPanel browserPanel, functionPanel, displayPanel;
     private Tab currentTab;
     private JTextField addressBar;
     private JButton previous, refresh, closeButton;
+    private JMenu bookmarks, settings;
 
     public void setAddress(String url) {
         addressBar.setText(url);
@@ -103,10 +107,19 @@ public class Maxium extends JFrame implements ActionListener, WindowListener {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
+    public void addBookmark(String link) {
+        JMenuItem mark = new JMenuItem(link);
+        bookmarks.add(mark);
+    }
 
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        loadTabs = !loadTabs;
+    }
 
     public Maxium(boolean loadTabs) {
         super("Maxium");
+        this.loadTabs = loadTabs;
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DISPLAY_WIDTH, BROWSER_HEIGHT + DISPLAY_HEIGHT));
@@ -131,18 +144,15 @@ public class Maxium extends JFrame implements ActionListener, WindowListener {
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.X_AXIS));
         functionPanel.setPreferredSize(new Dimension(DISPLAY_WIDTH - 20, BROWSER_HEIGHT / 2));
 
-//        Dimension btnSize = new Dimension(BROWSER_HEIGHT / 2, BROWSER_HEIGHT / 2);
         previous = new JButton("◀");
         previous.setBackground(THEME.Selected);
         previous.setForeground(THEME.Icon);
         previous.addActionListener(this);
-//        previous.setPreferredSize(btnSize);
 
         refresh = new JButton("🔄️");
         refresh.setBackground(THEME.Selected);
         refresh.setForeground(THEME.Icon);
         refresh.addActionListener(this);
-//        refresh.setPreferredSize(btnSize);
 
         closeButton = new JButton("X");
         closeButton.setBackground(THEME.Selected);
@@ -158,10 +168,43 @@ public class Maxium extends JFrame implements ActionListener, WindowListener {
         addressBar.setPreferredSize(new Dimension(
                 DISPLAY_WIDTH - 10,BROWSER_HEIGHT / 2 - 10));
 
+        JMenuBar bar = new JMenuBar();
+        bar.setBackground(THEME.Background);
+
+        bookmarks = new JMenu("★");//🔖");
+        bookmarks.setForeground(THEME.Icon);
+        bookmarks.getAccessibleContext().setAccessibleDescription(
+                "Bookmarked or favorited pages.");
+        bar.add(bookmarks);
+
+        //settings
+        settings = new JMenu("≡");
+        settings.setForeground(THEME.Icon);
+        settings.getAccessibleContext().setAccessibleDescription("Browser settings.");
+
+        JMenuItem a = new JMenuItem("New Tab");
+        a.addActionListener(e -> tabs.openTab());
+        settings.add(a);
+        JMenuItem b = new JMenuItem("New window");
+        b.addActionListener(e -> new Maxium(false));
+        settings.add(b);
+        settings.addSeparator();
+        JMenuItem c = new JRadioButtonMenuItem("Save & Reopen Tabs", loadTabs);
+        c.addChangeListener(this);
+        settings.add(c);
+        JMenuItem d = new JMenuItem("Clear saved tabs");
+        d.addActionListener(e -> (new File("savedTabs.txt")).delete());
+        settings.add(d);
+        bar.add(settings);
+
+        //adds
         functionPanel.add(previous);
         functionPanel.add(refresh);
         functionPanel.add(closeButton);
         functionPanel.add(addressBar);
+        functionPanel.add(bar);
+//        functionPanel.add(bookmarks);
+//        functionPanel.add(settings);
 
         browserPanel.add(tabs, BorderLayout.NORTH);
         browserPanel.add(functionPanel, BorderLayout.SOUTH);
@@ -179,7 +222,17 @@ public class Maxium extends JFrame implements ActionListener, WindowListener {
     }
 
     public static void main(String[] args) {
-        new Maxium(true);
+        try {
+//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+//            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            new Maxium(true);
+//            UIManager.put("swing.boldMetal", Boolean.FALSE);
+        } catch (Exception ignored) {
+            System.out.println("EXCEPTION" + ignored);
+            //exception:
+            // UnsupportedLookAndFeelException, ClassNotFoundException,
+            // InstantiationException, IllegalAccessException
+        }
     }
 
     @Override
@@ -190,7 +243,9 @@ public class Maxium extends JFrame implements ActionListener, WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         System.out.println("closing");
-        tabs.saveTabs();
+        if (loadTabs) {
+            tabs.saveTabs();
+        }
     }
 
     @Override

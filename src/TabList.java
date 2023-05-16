@@ -76,7 +76,7 @@ public class TabList extends JPanel implements ActionListener {
             File saved = new File("savedTabs.txt");
             return new Scanner(saved);
         } catch (FileNotFoundException ignored) {
-            return null;
+            return new Scanner("");
         }
     }
 
@@ -131,12 +131,7 @@ public class TabList extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                main.setTab(openTab());//new tab button clicked
-            }
-        });
-//        main.setTab(openTab());//new tab button clicked
+        javax.swing.SwingUtilities.invokeLater(() -> main.setTab(openTab()));
     }
 
     public TabList(Maxium mainObject) {

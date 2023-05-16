@@ -10,7 +10,7 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
     private Maxium main;
     private final String id;
 
-    public TabDisplay(String link, Maxium mainObject, int id) {
+    public TabDisplay(Maxium mainObject, int id) {
         super();
 
         this.id = Integer.toString(id);
@@ -38,7 +38,6 @@ public class TabDisplay extends JPanel implements HyperlinkListener {
         if (evt.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
             return;
         }
-//        JEditorPane srcPane = (JEditorPane)evt.getSource();
         if (evt instanceof HTMLFrameHyperlinkEvent) {
             HTMLDocument doc = (HTMLDocument)pane.getDocument();
             doc.processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent)evt);

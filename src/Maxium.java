@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -20,7 +22,7 @@ interface ColorTheme {
     Color Background = new Color(33, 42, 62);
 }
 
-public class Maxium extends JFrame implements ActionListener {
+public class Maxium extends JFrame implements ActionListener, WindowListener {
     static final int BROWSER_HEIGHT = 60;
     static final int DISPLAY_WIDTH = 800;
     static final int DISPLAY_HEIGHT = 450;
@@ -101,11 +103,14 @@ public class Maxium extends JFrame implements ActionListener {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
+
+
     public Maxium(boolean loadTabs) {
         super("Maxium");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DISPLAY_WIDTH, BROWSER_HEIGHT + DISPLAY_HEIGHT));
+        addWindowListener(this);
 
         //html display
         displayPanel = new JPanel();
@@ -164,11 +169,9 @@ public class Maxium extends JFrame implements ActionListener {
         add(browserPanel, BorderLayout.NORTH);
         add(displayPanel, BorderLayout.CENTER);
 
-        if (loadTabs) {
-//            tabs.openPreviousTabs();
+        if (loadTabs && tabs.getSavedTabs().hasNext()) {
+            tabs.openPreviousTabs();
         } else {
-//            tabs.openTab();
-//            tabs.openTab();
             setTab(tabs.openTab());
         }
         pack();
@@ -176,6 +179,42 @@ public class Maxium extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new Maxium(false);
+        new Maxium(true);
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        System.out.println("closing");
+        tabs.saveTabs();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        System.out.println("closed");
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+//        System.out.println("deactivated");
     }
 }

@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Tab extends JButton implements ActionListener {
     public String title, link;
@@ -38,6 +39,14 @@ public class Tab extends JButton implements ActionListener {
         setBackground(selected ? Maxium.THEME.Selected : Maxium.THEME.Background);
     }
 
+    public String encode() {
+        StringBuilder total = new StringBuilder();
+        for (String url : links) {
+            total.append(url).append("\t");
+        }
+        return total.toString();
+    }
+
     public Tab(String Title, String Link, TabDisplay Display, TabList List) {
         super(Title);
         setSelected(false);
@@ -50,5 +59,19 @@ public class Tab extends JButton implements ActionListener {
         display = Display;
         links = new ArrayList<>();
         links.add(Link);
+    }
+
+    public Tab(String[] history, TabDisplay Display, TabList List) {
+        super("Saved Tab");
+        setSelected(false);
+        setForeground(Maxium.THEME.Icon);
+        addActionListener(this);
+
+        list = List;
+        title = "Saved Tab";
+        link = history[history.length - 1];
+        display = Display;
+        links = new ArrayList<>();
+        Collections.addAll(links, history);
     }
 }

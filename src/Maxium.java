@@ -1,8 +1,3 @@
-//SOURCES:
-// SwingHTMLBrowser - https://gist.github.com/masnagam/ec6fd335b75bbe87aea7
-// CardLayout Tutorial - https://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
-// Color Palette - https://colorhunt.co/palette/f1f6f9394867212a3e9ba4b5
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;

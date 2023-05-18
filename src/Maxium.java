@@ -14,8 +14,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 interface ColorTheme {
     Color Icon = Color.WHITE;
@@ -36,8 +38,10 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
     private JPanel browserPanel, functionPanel, displayPanel;
     private Tab currentTab;
     private JTextField addressBar;
-    private JButton previous, refresh, closeButton;
+    private JButton previous, refresh, closeButton, setBookmark;
     private JMenu bookmarks, settings;
+
+    private final ActionListener bookmarkListener = e -> setTab(tabs.openTab(e.getActionCommand()));
 
     public void setAddress(String url) {
         addressBar.setText(url);
@@ -108,8 +112,71 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
     }
 
     public void addBookmark(String link) {
-        JMenuItem mark = new JMenuItem(link);
-        bookmarks.add(mark);
+        //search for pre-existing bookmark
+        JMenuItem mark = null;
+        for (int i = 0; i < bookmarks.getItemCount(); i++) {
+            JMenuItem item = bookmarks.getItem(i);
+            if (item.getActionCommand().equals(link)) {
+                mark = item;
+                break;
+            }
+        }
+
+        //if no mark then create else remove
+        if (mark == null) {
+            mark = new JMenuItem(link);
+            mark.setActionCommand(link);
+            mark.addActionListener(bookmarkListener);
+            bookmarks.add(mark);
+        } else {
+            mark.removeAll();
+            bookmarks.remove(mark);
+        }
+    }
+
+    public Scanner getSavedBookmarks() {
+        try {
+            File saved = new File("bookmarks.txt");
+            return new Scanner(saved);
+        } catch (FileNotFoundException ignored) {
+            return new Scanner("");
+        }
+    }
+
+    public void addSavedBookmarks() {
+        //read a text file or something
+        Scanner scan = getSavedBookmarks();
+        while (scan.hasNextLine()) {
+            addBookmark(scan.nextLine());
+        }
+    }
+
+    public void saveBookmarks() {
+        //convert tabs to string and write to file "savedTabs.txt"
+        StringBuilder newText = new StringBuilder();
+        for (int i = 0; i < bookmarks.getItemCount(); i++) {
+            newText.append(bookmarks.getItem(i).getActionCommand()).append("\n");
+        }
+
+        try {
+            FileWriter saved = new FileWriter("bookmarks.txt");
+            saved.write(newText.toString());
+            saved.close();
+            System.out.println("wrote to existing file");
+        } catch (FileNotFoundException e) {
+            try {
+                new File("bookmarks.txt");
+                FileWriter saved = new FileWriter("bookmarks.txt");
+                saved.write(newText.toString());
+                saved.close();
+                System.out.println("created and wrote to file");
+            } catch (IOException ignored) {
+                System.out.println("second ignore");
+                //System.exit()??
+            }
+        } catch (IOException ignored) {
+            System.out.println("first ignore");
+        }
     }
 
     @Override
@@ -159,7 +226,12 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         closeButton.setForeground(THEME.Icon);
         closeButton.addActionListener(this);
 
-        addressBar = new JTextField();
+        setBookmark = new JButton("★");
+        setBookmark.setBackground(THEME.Selected);
+        setBookmark.setForeground(THEME.Icon);
+        setBookmark.addActionListener(e -> addBookmark(currentTab.link));
+
+                addressBar = new JTextField();
         addressBar.setActionCommand("Address");
         addressBar.setBackground(THEME.Selected);
         addressBar.setForeground(THEME.Icon);
@@ -171,7 +243,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         JMenuBar bar = new JMenuBar();
         bar.setBackground(THEME.Background);
 
-        bookmarks = new JMenu("★");//🔖");
+        bookmarks = new JMenu("📁");//🔖");
         bookmarks.setForeground(THEME.Icon);
         bookmarks.getAccessibleContext().setAccessibleDescription(
                 "Bookmarked or favorited pages.");
@@ -201,10 +273,9 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         functionPanel.add(previous);
         functionPanel.add(refresh);
         functionPanel.add(closeButton);
+        functionPanel.add(setBookmark);
         functionPanel.add(addressBar);
         functionPanel.add(bar);
-//        functionPanel.add(bookmarks);
-//        functionPanel.add(settings);
 
         browserPanel.add(tabs, BorderLayout.NORTH);
         browserPanel.add(functionPanel, BorderLayout.SOUTH);
@@ -212,6 +283,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         add(browserPanel, BorderLayout.NORTH);
         add(displayPanel, BorderLayout.CENTER);
 
+        addSavedBookmarks();
         if (loadTabs && tabs.getSavedTabs().hasNext()) {
             tabs.openPreviousTabs();
         } else {
@@ -243,6 +315,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
     @Override
     public void windowClosing(WindowEvent e) {
         System.out.println("closing");
+        saveBookmarks();
         if (loadTabs) {
             tabs.saveTabs();
         }

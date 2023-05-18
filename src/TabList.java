@@ -56,7 +56,6 @@ public class TabList extends JPanel implements ActionListener {
     public Tab closeTab(Tab t) {
         int index = getIndex(t);
         if (index != -1) {
-            System.out.println("found tab to close");
             main.removeDisplay(t.display);
             list.remove(index);
             t.removeAll();
@@ -81,7 +80,6 @@ public class TabList extends JPanel implements ActionListener {
     }
 
     public void openPreviousTabs() {
-        System.out.println("openPreviousTabs");
         //read a text file or something
         Scanner scan = getSavedTabs();
         Tab lastTab = null;
@@ -96,13 +94,11 @@ public class TabList extends JPanel implements ActionListener {
     }
 
     public void saveTabs() {
-        System.out.println("saveTabs");
         //convert tabs to string and write to file "savedTabs.txt"
         StringBuilder newText = new StringBuilder();
         for (Tab t : list) {
             newText.append(t.encode()).append("\n");
         }
-        System.out.println("newText len: " + newText.toString().length());
 
         if (newText.toString().equals("http://google.com\t\n")) {
             System.out.println("saveTabs cancelled since new tab is the only tab");
@@ -113,20 +109,16 @@ public class TabList extends JPanel implements ActionListener {
             FileWriter saved = new FileWriter("savedTabs.txt");
             saved.write(newText.toString());
             saved.close();
-            System.out.println("wrote to existing file");
         } catch (FileNotFoundException e) {
             try {
                 new File("savedTabs.txt");
                 FileWriter saved = new FileWriter("savedTabs.txt");
                 saved.write(newText.toString());
                 saved.close();
-                System.out.println("created and wrote to file");
             } catch (IOException ignored) {
-                System.out.println("second ignore");
                 //System.exit()??
             }
         } catch (IOException ignored) {
-            System.out.println("first ignore");
         }
     }
 

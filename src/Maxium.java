@@ -106,7 +106,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
-    public void addBookmark(String link) {
+    private void addBookmark(String link) {
         //search for pre-existing bookmark
         JMenuItem mark = null;
         for (int i = 0; i < bookmarks.getItemCount(); i++) {
@@ -129,7 +129,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         }
     }
 
-    public Scanner getSavedBookmarks() {
+    private Scanner getSavedBookmarks() {
         try {
             File saved = new File("bookmarks.txt");
             return new Scanner(saved);
@@ -138,7 +138,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         }
     }
 
-    public void addSavedBookmarks() {
+    private void addSavedBookmarks() {
         //read a text file or something
         Scanner scan = getSavedBookmarks();
         while (scan.hasNextLine()) {
@@ -146,7 +146,7 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         }
     }
 
-    public void saveBookmarks() {
+    private void saveBookmarks() {
         //convert tabs to string and write to file "savedTabs.txt"
         StringBuilder newText = new StringBuilder();
         for (int i = 0; i < bookmarks.getItemCount(); i++) {
@@ -166,11 +166,11 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
                 saved.close();
                 System.out.println("created and wrote to file");
             } catch (IOException ignored) {
-                System.out.println("second ignore");
+                //System.out.println("second ignore");
                 //System.exit()??
             }
         } catch (IOException ignored) {
-            System.out.println("first ignore");
+            //System.out.println("first ignore");
         }
     }
 
@@ -262,6 +262,8 @@ public class Maxium extends JFrame implements ActionListener, WindowListener, Ch
         JMenuItem d = new JMenuItem("Clear saved tabs");
         d.addActionListener(e -> (new File("savedTabs.txt")).delete());
         settings.add(d);
+        settings.addSeparator();
+
         bar.add(settings);
 
         //adds

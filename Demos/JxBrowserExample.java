@@ -22,7 +22,7 @@ import static com.teamdev.jxbrowser.engine.RenderingMode.HARDWARE_ACCELERATED;
  *     <li>Loading the "https://html5test.com" web site.
  * </ol>
  */
-public final class JxBrowserExample {
+public class JxBrowserExample {
     public static void main(String[] args) {
         // Creating and running Chromium engine
         Engine engine = Engine.newInstance(HARDWARE_ACCELERATED);

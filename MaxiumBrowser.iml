@@ -9,3 +9,13 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
+<repository>
+  <id>com.teamdev</id>
+  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
+</repository>
+<dependency>
+    <groupId>com.teamdev.jxbrowser</groupId>
+    <artifactId>jxbrowser-cross-platform</artifactId>
+    <version>7.32</version>
+    <type>pom</type>
+</dependency>
